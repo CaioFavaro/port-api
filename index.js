@@ -5,17 +5,23 @@ const port = process.env.PORT || 3000;
 
 app.use(express.json());
 
+// Rota de debug: exibe uma mensagem simples na raiz
+app.get('/', (req, res) => {
+  res.send('Bem-vindo à API de localização');
+});
+
 app.get('/api/location', async (req, res) => {
   let ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+  // Se o IP for local, usa um IP de teste
   if (
     ip === '::1' ||
     ip === '127.0.0.1' ||
     (typeof ip === 'string' && ip.startsWith('::ffff:127.0.0.1'))
   ) {
-    ip = '8.8.8.8'; // IP para testes locais
+    ip = '8.8.8.8'; // IP público para testes
   }
   try {
-    // Corrigido para usar template literal corretamente
+    // Corrigido para usar backticks corretamente na URL
     const response = await axios.get(`https://ipapi.co/${ip}/json/`);
     const locationData = response.data;
     const html = `
@@ -56,7 +62,6 @@ app.get('/api/location', async (req, res) => {
   }
 });
 
-// Use '0.0.0.0' para que o Render possa acessar sua aplicação
 app.listen(port, '0.0.0.0', () => {
   console.log(`Servidor rodando na porta ${port}`);
 });

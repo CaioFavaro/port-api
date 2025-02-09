@@ -1,3 +1,10 @@
+const express = require('express');
+const axios = require('axios');
+const app = express();
+const port = process.env.PORT || 3001;
+
+app.use(express.json());
+
 app.get('/api/location', async (req, res) => {
     let ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
     
@@ -41,7 +48,7 @@ app.get('/api/location', async (req, res) => {
       `;
       res.send(html);
     } catch (error) {
-      // Exibe detalhes do erro para facilitar o debug
+     
       console.error('Erro ao buscar localização:', error.response ? error.response.data : error.message);
       res.status(500).json({ message: 'Erro ao buscar localização' });
     }
